@@ -20,7 +20,7 @@ const PremiumPage = ({setshowNav}) => {
 
 
             <div className='flex justify-start items-center gap-x-4 mt-10 flex-wrap'>
-                <Link to={"/subscription/form"} className='min-w-[20rem] p-2 h-[13rem] bg-[#1F70F0] rounded-xl text-white mb-4'>
+                <Link to={"/subscription/form"} className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#1F70F0] rounded-xl text-white mb-4'>
                     <div className='flex justify-between items-center mt-4'>
                         <h1>Premium</h1>
                         <p>$80 per month</p>
@@ -29,7 +29,7 @@ const PremiumPage = ({setshowNav}) => {
                     <p className='text-center text-wrap text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.tium est! Error ad fuga quisquam natus ipsa odio?</p>
                     <button className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
                 </Link>
-                <Link to={"/subscription/form"} className='min-w-[20rem] p-2 h-[13rem] bg-[#FE3C30] rounded-xl text-white mb-4'>
+                <Link to={"/subscription/form"} className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#FE3C30] rounded-xl text-white mb-4'>
                     <div className='flex justify-between items-center mt-4'>
                         <h1>Premium</h1>
                         <p>$80 per month</p>
@@ -38,7 +38,7 @@ const PremiumPage = ({setshowNav}) => {
                     <p className='text-center text-wrap text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.tium est! Error ad fuga quisquam natus ipsa odio?</p>
                     <button className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
                 </Link>
-                <Link to={"/subscription/form"} className='min-w-[20rem] p-2 h-[13rem] bg-[#4CD964] rounded-xl text-white mb-4'>
+                <Link to={"/subscription/form"} className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#4CD964] rounded-xl text-white mb-4'>
                     <div className='flex justify-between items-center mt-4'>
                         <h1>Premium</h1>
                         <p>$80 per month</p>

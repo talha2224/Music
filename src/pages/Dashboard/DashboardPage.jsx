@@ -5,6 +5,8 @@ import { navLinks } from '../../constants/navigation';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { ImCross } from 'react-icons/im';
 import Input from '../../components/Input'
+import axios from 'axios';
+import devConfig from '../../config'
 
 
 const DashboardPage = ({ setshowNav, showNav }) => {
@@ -12,7 +14,32 @@ const DashboardPage = ({ setshowNav, showNav }) => {
     const [showPopup, setshowPopup] = useState(false)
     const [currentView, setcurrentView] = useState("private")
     const currentPath = useLocation().pathname.split("/")[2]
+    const [data, setData] = useState({ title: "", description: "", userId: localStorage.getItem("userId") })
     const nav = useNavigate()
+
+    const onChangeInput = (e) => {
+        setData({ ...data, [e.target.name]: e.target.value })
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if (data?.title.length === 0 || data?.description.length === 0) {
+          toast.error("All Fields Are Required")
+        }
+        else {
+          try {
+            let res = await axios.post(`${devConfig.baseUrl}/playlist/create`, {...data,private:currentView})
+            if (res) {
+              toast.success("Playlist Created")
+              setshowPopup(false); 
+            //   nav("/dashboard/playlist")
+            }
+          }
+          catch (error) {
+            console.log(error)
+          }
+        }
+    }
 
     return (
         <div className='flex items-start w-screen h-screen overflow-auto bg-[#121212]'>
@@ -68,7 +95,7 @@ const DashboardPage = ({ setshowNav, showNav }) => {
                                 <img src={Logo} alt="" className='h-[1.5rem]' />
                                 <h1 className='text-white font-bold text-lg'>Music Plugg</h1>
                             </div>
-                            <ImCross onClick={()=>setshowNav(false)} />
+                            <ImCross onClick={() => setshowNav(false)} />
                         </div>
                         {/* LINKS  */}
                         <div className="mt-[4rem]">
@@ -126,14 +153,14 @@ const DashboardPage = ({ setshowNav, showNav }) => {
                                 <ImCross onClick={() => { setshowPopup(false) }} className='text-white cursor-pointer' />
                             </div>
 
-                            <Input type={"text"} name={"name"} className={`bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none `} placeholder={"Title"} />
-                            <Input type={"text"} name={"name"} className={`bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none `} placeholder={"Description"} />
+                            <Input onChangeFunc={(e) => onChangeInput(e)} type={"text"} name={"title"} className={`bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none `} placeholder={"Title"} />
+                            <Input onChangeFunc={(e) => onChangeInput(e)} type={"text"} name={"description"} className={`bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none `} placeholder={"Description"} />
                             <div className="flex items-center gap-x-3 mt-5 mb-3">
                                 <button onClick={() => setcurrentView("private")} className={`px-3 py-1 rounded-3xl  text-sm ${currentView !== "private" ? "bg-[#262626]" : "bg-[#fff] text-black "}`}>Private</button>
                                 <button onClick={() => setcurrentView("public")} className={`px-3 py-1 rounded-3xl text-sm  ${currentView !== "public" ? "bg-[#262626]" : "bg-[#fff] text-black"}`}>Public</button>
                             </div>
 
-                            <button onClick={() => {setshowPopup(false);nav("/dashboard/playlist")}} className='bg-white rounded-[2rem] w-[100%] h-[2.5rem] text-black mt-0 font-bold'>Create</button>
+                            <button onClick={handleSubmit} className='bg-white rounded-[2rem] w-[100%] h-[2.5rem] text-black mt-0 font-bold'>Create</button>
                             <button onClick={() => setshowPopup(false)} className='bg-[#262626] rounded-[2rem] w-[100%] h-[2.5rem] text-white mt-2 font-bold'>Cancel</button>
 
 

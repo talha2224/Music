@@ -16,29 +16,34 @@ import SubscriptionFormPage from './pages/Subscription/SubscriptionFormPage';
 import ConfrimationPage from './pages/Subscription/ConfrimationPage';
 import PlaylistPage from './pages/Dashboard/PlaylistPage';
 import { useState } from 'react';
+import Notifier from './components/Notifier';
 
 function App() {
-  const [showNav, setshowNav] = useState(true)
+  const [showNav, setshowNav] = useState(false)
   return (
-    <Routes>
-      <Route path='/' element={<LoginPage />} />
-      <Route path='/register' element={<RegisterPage />} />
-      <Route path='/password' element={<PasswordPage />} />
-      <Route path='/artist' element={<ArtistGridPage />} />
-      <Route path='/subscription/form' element={<SubscriptionFormPage />} />
-      <Route path='/confirmation' element={<ConfrimationPage />} />
-      <Route path="/dashboard/" element={<DashboardPage setshowNav={setshowNav} showNav={showNav}  />}>
-        <Route path='home' element={<HomePage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='explore' element={<ExplorePage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='premium' element={<PremiumPage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='history' element={<HistoryPage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='library' element={<LibraryPage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='library/like' element={<LikePage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='library/save' element={<SavePage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='playlist' element={<PlaylistPage setshowNav={setshowNav} showNav={showNav} />} />
-        <Route path='explore/playlist' element={<PlaylistPage  setshowNav={setshowNav} showNav={showNav} />} />
-      </Route>
-    </Routes>
+    <>
+      <Notifier />
+      <Routes>
+        <Route path='/' element={<LoginPage />} />
+        <Route path='/register' element={<RegisterPage />} />
+        <Route path='/password' element={<PasswordPage />} />
+        <Route path='/artist' element={<ArtistGridPage />} />
+        <Route path='/subscription/form' element={<SubscriptionFormPage />} />
+        <Route path='/confirmation' element={<ConfrimationPage />} />
+        <Route path="/dashboard/" element={<DashboardPage setshowNav={setshowNav} showNav={showNav} />}>
+          <Route path='home' element={<HomePage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='explore' element={<ExplorePage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='premium' element={<PremiumPage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='history' element={<HistoryPage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='library' element={<LibraryPage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='library/like' element={<LikePage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='library/save' element={<SavePage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='playlist' element={<PlaylistPage setshowNav={setshowNav} showNav={showNav} />} />
+          <Route path='explore/playlist/:id' element={<PlaylistPage setshowNav={setshowNav} showNav={showNav} />} />
+        </Route>
+      </Routes>
+
+    </>
   );
 }
 

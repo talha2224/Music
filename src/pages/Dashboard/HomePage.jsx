@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Slider from '../../assets/slider.png'
 import MusicListing from '../../components/listing/MusicListing'
 import AlbumsListing from '../../components/listing/AlbumsListing'
@@ -6,11 +6,42 @@ import LeftArrow from '../../assets/leftarrow.png'
 import RightArrow from '../../assets/rightarrow.png'
 import QuickPicksListing from '../../components/listing/QuickPicksListing'
 import Navbar from '../../components/Navbar'
+import axios from 'axios'
+import devConfig from '../../config'
 
 
-const HomePage = ({setshowNav}) => {
+const HomePage = ({ setshowNav }) => {
   const [settingsPopup, setsettingsPopup] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [music, setMusic] = useState([])
+  const [album, setAlbum] = useState([])
 
+
+  const getCategoriesData = async () => {
+    let res = await axios.get(`${devConfig.baseUrl}/category/all`)
+    setCategories(res?.data?.data)
+  }
+
+  const getMusicData = async () => {
+    let res = await axios.get(`${devConfig.baseUrl}/music/all`)
+    setMusic(res?.data?.data)
+  }
+
+  const getMusicDataByCategory = async (id) => {
+    let res = await axios.get(`${devConfig.baseUrl}/music/category/${id}`)
+    setMusic(res?.data?.data)
+  }
+
+  const getAlbumData = async (e) => {
+    let res = await axios.get(`${devConfig.baseUrl}/album/all`)
+    setAlbum(res?.data?.data)
+  }
+
+  useEffect(() => {
+    getCategoriesData()
+    getMusicData()
+    getAlbumData()
+  }, [])
   return (
     <div className='h-[100vh] overflow-y-auto py-4 md:py-10 pl-6 pr-2'>
 
@@ -18,30 +49,20 @@ const HomePage = ({setshowNav}) => {
       <Navbar currentState={settingsPopup} setState={setsettingsPopup} setshowNav={setshowNav} />
       {/* FILTERS  */}
       <div className='flex gap-x-4 items-center  mt-4 w-[100%] overflow-x-auto'>
-        <div className='bg-[#262626] py-2 px-3 rounded-3xl cursor-pointer'>
-          <p className='text-white text-sm'>Relaxe</p>
-        </div>
-        <div className='bg-[#262626] py-2 px-3 rounded-3xl cursor-pointer'>
-          <p className='text-white text-sm'>Sleep</p>
-        </div>
-        <div className='bg-[#262626] py-2 px-3 rounded-3xl cursor-pointer'>
-          <p className='text-white text-sm'>Energise</p>
-        </div>
-        <div className='bg-[#262626] py-2 px-3 rounded-3xl cursor-pointer'>
-          <p className='text-white text-sm'>Sad</p>
-        </div>
-        <div className='bg-[#262626] py-2 px-3 rounded-3xl cursor-pointer'>
-          <p className='text-white text-sm'>Vibe</p>
-        </div>
-        <div className='bg-[#262626] py-2 px-3 rounded-3xl cursor-pointer'>
-          <p className='text-white text-sm'>Part</p>
-        </div>
+        {
+          categories?.map((i, indx) => (
+            <div key={indx} className='bg-[#262626] py-2 px-3 rounded-3xl cursor-pointer' onClick={()=>getMusicDataByCategory(i?._id)}>
+              <p className='text-white text-sm'>{i?.title}</p>
+            </div>
+
+          ))
+        }
       </div>
 
       {/* ARTIST LISTING  */}
       <div className='mt-6'>
         <h1 className='text-2xl font-semibold mb-4'>Best of artists</h1>
-        <MusicListing />
+        <MusicListing data={music}/>
       </div>
 
       <img src={Slider} alt="" className='mt-4' />
@@ -50,7 +71,7 @@ const HomePage = ({setshowNav}) => {
       {/* FOR YOU  */}
       <div className='mt-6'>
         <h1 className='text-2xl font-semibold mb-4'>For you</h1>
-        <MusicListing />
+        <MusicListing data={music} />
       </div>
 
       <img src={Slider} alt="" className='mt-4' />
@@ -70,7 +91,7 @@ const HomePage = ({setshowNav}) => {
           </div>
         </div>
       </div>
-      <QuickPicksListing />
+      <QuickPicksListing data={music} />
       <img src={Slider} alt="" className='mt-4' />
 
 
@@ -78,7 +99,7 @@ const HomePage = ({setshowNav}) => {
       {/* ALBUM LISTING  */}
       <div className='mt-6'>
         <h1 className='text-2xl font-semibold mb-4'>Recommended Albums</h1>
-        <AlbumsListing />
+        <AlbumsListing data={album} />
       </div>
 
       <img src={Slider} alt="" className='mt-4' />
