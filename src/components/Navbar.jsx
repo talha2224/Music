@@ -100,7 +100,7 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
                     <Input type={"text"} name={"search"} placeholder={"What do you want to listen to"} className={`flex-1 outline-none border-none bg-transparent placeholder:text-[#A1A1A1] text-[#A1A1A1] truncate`} />
                 </div>
                 {
-                    !isLogin ? (
+                    !localStorage.getItem("userId") ? (
                         <button className='text-black bg-white rounded-3xl h-[2.3rem] w-[5rem] font-semibold'>Sign in</button>
                     ) :
                         (
@@ -115,7 +115,7 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
                                                     <p className='font-semibold'>{data?.name[0]}</p>
                                                 </div>
                                                 <div>
-                                                    <p>John Doe</p>
+                                                    <p>{data?.name}</p>
                                                     <p className='text-[#606060]'>{data?.email}</p>
                                                 </div>
 

@@ -1,11 +1,40 @@
+import axios from 'axios'
 import React from 'react'
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { Link } from 'react-router-dom'
+import devConfig from '../../config'
+import { loadStripe } from "@stripe/stripe-js";
+import toast from 'react-hot-toast';
 
-const PremiumPage = ({setshowNav}) => {
+const public_stripe_key = devConfig.stripePublishKey;
+
+const PremiumPage = ({ setshowNav }) => {
+
+
+    const handleSubscription = async () => {
+        try {
+            const stripe = await loadStripe(public_stripe_key);
+            let response = await axios.post(`${devConfig.baseUrl}/account/subscribe`, { id: localStorage.getItem("userId") });
+            console.log(response, 'response');
+
+            if (response.status === 409 && response.data.msg) {
+                toast.error(response.data.msg)
+            }
+            else if (response.status === 200 && response.data.id) {
+                await stripe.redirectToCheckout({ sessionId: response.data.id });
+            }
+        }
+        catch (error) {
+            console.log(error);
+            if(error.status==409){
+                toast.error(error.response.data.msg)
+            }
+        }
+    };
+
+
     return (
         <div className='h-[100vh] overflow-y-auto py-10 pl-6 pr-2'>
-            <GiHamburgerMenu onClick={()=>setshowNav(true)} className='md:hidden block'/>
+            <GiHamburgerMenu onClick={() => setshowNav(true)} className='md:hidden block' />
             {/* SEARCH BAR  */}
             <div className='flex justify-end items-center'>
                 <button className='text-black bg-white rounded-3xl h-[2.3rem] w-[5rem] font-semibold'>Sign in</button>
@@ -20,33 +49,33 @@ const PremiumPage = ({setshowNav}) => {
 
 
             <div className='flex justify-start items-center gap-x-4 mt-10 flex-wrap'>
-                <Link to={"/subscription/form"} className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#1F70F0] rounded-xl text-white mb-4'>
+                <div className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#1F70F0] rounded-xl text-white mb-4'>
                     <div className='flex justify-between items-center mt-4'>
                         <h1>Premium</h1>
                         <p>$80 per month</p>
                     </div>
                     <div className='bg-white w-[100%] h-[0.1px] mt-2 mb-2'></div>
                     <p className='text-center text-wrap text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.tium est! Error ad fuga quisquam natus ipsa odio?</p>
-                    <button className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
-                </Link>
-                <Link to={"/subscription/form"} className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#FE3C30] rounded-xl text-white mb-4'>
+                    <button onClick={() => handleSubscription()} className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
+                </div>
+                <div className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#FE3C30] rounded-xl text-white mb-4'>
                     <div className='flex justify-between items-center mt-4'>
                         <h1>Premium</h1>
                         <p>$80 per month</p>
                     </div>
                     <div className='bg-white w-[100%] h-[0.1px] mt-2 mb-2'></div>
                     <p className='text-center text-wrap text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.tium est! Error ad fuga quisquam natus ipsa odio?</p>
-                    <button className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
-                </Link>
-                <Link to={"/subscription/form"} className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#4CD964] rounded-xl text-white mb-4'>
+                    <button  onClick={() => handleSubscription()} className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
+                </div>
+                <div className='w-[100%] sm:min-w-[20rem] md:max-w-[20rem] p-2 h-[13rem] bg-[#4CD964] rounded-xl text-white mb-4'>
                     <div className='flex justify-between items-center mt-4'>
                         <h1>Premium</h1>
                         <p>$80 per month</p>
                     </div>
                     <div className='bg-white w-[100%] h-[0.1px] mt-2 mb-2'></div>
                     <p className='text-center text-wrap text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.tium est! Error ad fuga quisquam natus ipsa odio?</p>
-                    <button className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
-                </Link>
+                    <button  onClick={() => handleSubscription()} className='w-[100%] h-[2.5rem] bg-white text-black rounded-2xl mt-6 font-bold'>Go premium</button>
+                </div>
             </div>
 
 
