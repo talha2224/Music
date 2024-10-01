@@ -20,10 +20,12 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
     const [isLogin] = useState(true);
     const [showPopup, setshowPopup] = useState(false);
     const [uploadMusicPopup, setuploadMusicPopup] = useState(false);
+    const [uploadArtistPopup, setuploadArtistPopup] = useState(false);
     const [data, setData] = useState({ name: "", email: "" });
     const [musicData, setMusicData] = useState({ title: "", description: "", artist: "", category: "", listners: 90, image: "", song: "" });
     const [categories, setCategories] = useState([]);
     const [artist, setArtist] = useState([]);
+    const [artistData, setArtistData] = useState({ name: "", image: "" });
 
     const getUserData = async () => {
         let res = await axios.get(`${devConfig.baseUrl}/account/single/${localStorage.getItem("userId")}`);
@@ -47,13 +49,21 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
         setMusicData({ ...musicData, [e.target.name]: e.target.value });
     };
 
+    const onChangeArtistInput = (e) => {
+        setArtistData({ ...artistData, [e.target.name]: e.target.value });
+    };
+
+
     const onFileChange = (e) => {
         setMusicData({ ...musicData, [e.target.name]: e.target.files[0] });
     };
 
+    const onArtistChange = (e) => {
+        setArtistData({ ...artistData, [e.target.name]: e.target.files[0] });
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(musicData,'musicData')
+        console.log(musicData, 'musicData')
         let loader = toast.loading("Upload Music")
         if (musicData?.title.length === 0 || musicData?.description.length === 0 || musicData?.artist.length === 0 || musicData?.category.length === 0) {
             toast.error("All Fields Are Required");
@@ -75,7 +85,34 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
                     toast.success("Music Created");
                     setuploadMusicPopup(false);
                 }
-            } 
+            }
+            catch (error) {
+                console.log(error);
+                toast.dismiss(loader)
+
+            }
+        }
+    };
+
+    const handleCreateArtist= async (e) => {
+        e.preventDefault();
+        let loader = toast.loading("Creating Artist")
+        if (artistData?.name.length === 0) {
+            toast.error("All Fields Are Required");
+            toast.dismiss(loader)
+        }
+        else {
+            try {
+                let formData = new FormData();
+                formData.append("name", artistData.name);
+                formData.append("image", artistData.image);
+                let res = await axios.post(`${devConfig.baseUrl}/prefference/create`, formData);
+                if (res) {
+                    toast.dismiss(loader)
+                    toast.success("Artist Created");
+                    setuploadArtistPopup(false);
+                }
+            }
             catch (error) {
                 console.log(error);
                 toast.dismiss(loader)
@@ -125,6 +162,10 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
                                             <div onClick={() => setuploadMusicPopup(true)} className='flex items-center w-[100%] h-[2rem] px-3 rounded-md hover:bg-[#606060] cursor-pointer mt-2 gap-x-3'>
                                                 <img src={Upload} alt="" />
                                                 <p className='text-sm'>Upload Music</p>
+                                            </div>
+                                            <div onClick={() => setuploadArtistPopup(true)} className='flex items-center w-[100%] h-[2rem] px-3 rounded-md hover:bg-[#606060] cursor-pointer mt-2 gap-x-3'>
+                                                <img src={Upload} alt="" />
+                                                <p className='text-sm'>Create Artist</p>
                                             </div>
                                             <Link to={"/dashboard/history"} className='flex items-center w-[100%] h-[2rem] px-3 rounded-md hover:bg-[#606060] cursor-pointer mt-2 gap-x-3'>
                                                 <img src={History} alt="" />
@@ -230,8 +271,8 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
                         </div>
 
                         <form onSubmit={handleSubmit} className="mt-5">
-                            <input type="text" name="title" placeholder="Title" value={musicData.title} onChange={onChangeInput} className="bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none "/>
-                            <input type="text" name="description" placeholder="Description" value={musicData.description} onChange={onChangeInput} className="bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none "/>
+                            <input type="text" name="title" placeholder="Title" value={musicData.title} onChange={onChangeInput} className="bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none " />
+                            <input type="text" name="description" placeholder="Description" value={musicData.description} onChange={onChangeInput} className="bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none " />
 
                             <select name="artist" value={musicData.artist} onChange={onChangeInput} className="bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none ">
                                 <option value="">Select Artist</option>
@@ -253,6 +294,27 @@ const Navbar = ({ currentState, setState, setshowNav }) => {
 
                             <button onClick={handleSubmit} className='bg-white rounded-[2rem] w-[100%] h-[2.5rem] text-black mt-3 font-bold'>Upload Music</button>
                             <button onClick={() => setuploadMusicPopup(false)} className='bg-[#262626] rounded-[2rem] w-[100%] h-[2.5rem] text-white mt-2 font-bold'>Cancel</button>                        </form>
+                    </div>
+                </div>
+            )}
+
+
+            {uploadArtistPopup && (
+                <div className='z-50 fixed top-0 left-0 right-0 w-screen h-screen flex justify-center items-center bg-black bg-opacity-50'>
+                    <div className='bg-[#121212] w-[90%] md:w-[40%] md:h-fit h-[50vh] overflow-y-auto p-6 rounded-md'>
+                        <div className="flex justify-between items-center">
+                            <h1 className='text-lg font-semibold'>Create Artist</h1>
+                            <ImCross onClick={() => setuploadArtistPopup(false)} className='text-white cursor-pointer' />
+                        </div>
+
+                        <form onSubmit={handleCreateArtist} className="mt-5">
+                            <input type="text" name="name" placeholder="Artist Name" value={artistData.name} onChange={(e)=>onChangeArtistInput(e)} className="bg-[#262626] w-[100%] h-[2.3rem] rounded-md px-3 text-white mt-5 border-none outline-none " />
+
+
+                            <p className='mt-3 mb-1'>Upload Artist Image</p>
+                            <input type="file" name="image" accept="image/*" onChange={(e)=>onArtistChange(e)} className="block " />
+                            <button onClick={handleCreateArtist} className='bg-white rounded-[2rem] w-[100%] h-[2.5rem] text-black mt-3 font-bold'>Create Artist</button>
+                            <button onClick={() => setuploadArtistPopup(false)} className='bg-[#262626] rounded-[2rem] w-[100%] h-[2.5rem] text-white mt-2 font-bold'>Cancel</button>                        </form>
                     </div>
                 </div>
             )}
