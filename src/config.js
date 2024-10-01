@@ -12,4 +12,4 @@ let production = {
 }
 
 
-export default dev
+export default production
